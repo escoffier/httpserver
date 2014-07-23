@@ -1,11 +1,12 @@
 #ifndef _HTTPSERVER_H_
 #define _HTTPSERVER_H_
+#include <vector>
 #include <poll.h>
 
 class HttpServer
 {
 public:
-    explict HttpServer(short port);
+    explicit HttpServer(short port);
     ~HttpServer() {};
     
 	bool Start();

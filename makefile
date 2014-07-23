@@ -1,5 +1,5 @@
 
-objects = main.o
+objects = main.o httpserver.o
 cc = g++
 
 httpserver : $(objects)
