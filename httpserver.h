@@ -9,10 +9,10 @@ public:
     explicit HttpServer(short port);
     ~HttpServer() {};
     
-	bool Start();
-	
+    bool Start();
+    
 private:
     short port_;
-	std::vector<pollfd> channels;
+    std::vector<pollfd> channels;
 };
 #endif
