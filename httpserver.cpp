@@ -6,7 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
-
+#include <channel.c>
 HttpServer::HttpServer(short port)
 {
     port_ = port;
@@ -45,6 +45,9 @@ bool HttpServer::Start()
     fd.fd = listenfd;
     fd.events = POLLIN;
     channels.push_back(fd);
+    Channel* ch = new Channel(listenfd);
+    ch->SetReadCallback();
+    chs_.insert(std::pair<int, Channel*>();
     while ( true )
     {
         int eventnum;
@@ -86,3 +89,12 @@ bool HttpServer::Start()
     }
     return true;
 }
+
+void HttpServer::AddChannel(int fd, Channel* chn)
+{
+    chs_.insert(std::pair<int, Channel*>(fd, chn));
+}
+
+
+
+
