@@ -9,14 +9,17 @@ class Channel;
 class HttpServer
 {
 public:
+    typedef void (*functor)(void* arg);
     explicit HttpServer(short port);
     ~HttpServer() {};
     
     bool Start();
-    void AddChannel(int fd, Channel*);   
+    void AddChannel(int fd, Channel*); 
+    void OnConnection(int listenfd);	
 private:
     short port_;
     std::vector<pollfd> channels;
     std::map<int, Channel*> chs_;
+	int listenfd_;
 };
 #endif
