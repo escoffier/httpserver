@@ -18,6 +18,7 @@ void ReadCB(void *arg)
 {
    char buf[1024] = {0};
    int fd = *((int*)(&arg));
+   std::cout<<"read fd: "<<fd<<std::endl;
    if(read(fd, buf, 6000) > 0)
 	{
 		std::cout<<"**************recive date*************"<<std::endl;
@@ -60,8 +61,10 @@ bool HttpServer::Start()
     }
     std::cout<<"listen fd: "<<listenfd_<<std::endl;
     struct pollfd fd;
+    fd.events = 0;
+    fd.revents = 0;
     fd.fd = listenfd_;
-    fd.events = POLLIN;
+    fd.events |= POLLIN;
     channels.push_back(fd);
     Channel* ch = new Channel(listenfd_);
     ch->SetReadCallback(ConnectCB, this);
@@ -70,13 +73,14 @@ bool HttpServer::Start()
     {
         int eventnum;
         eventnum = poll(&channels[0], channels.size(), -1);
+        std::cout<<"event fd number: "<<eventnum<<std::endl;
         if(eventnum > 0)
         {
-		    for(int i = 0; i < eventnum; ++i)
+		    for(int i = 0; i <channels.size(); ++i)
 			{
-                            //std::cout<<"event: "<<channels[i].revents<<std::endl;
 			    if( channels[i].revents & POLLIN)
 				{   
+                                   std::cout<<"event: "<<channels[i].revents<<std::endl;
                                     std::cout<<"detect event on "<<channels[i].fd<<std::endl;
 				    Channel* ch = chs_[channels[i].fd];
 				    ch->HandleRead();
@@ -128,13 +132,16 @@ void HttpServer::OnConnection()
 	int connfd;
         struct sockaddr_in peeraddr;
         struct pollfd fd;
+        fd.events = 0;
+        fd.revents = 0;
 	int socklen = sizeof(sockaddr);
 	connfd = accept(listenfd_, (sockaddr *)&peeraddr, (socklen_t *)&socklen);
 	if( connfd > 0 )
 	{
+		channels[0].revents = 0;
 		fd.fd = connfd;
-		fd.events = POLLIN;
-		std::cout<<"accept new connection from "<<peeraddr.sin_addr.s_addr<<":"<<peeraddr.sin_port<<std::endl;
+		fd.events |= POLLIN;
+		std::cout<<"accept new connection("<<connfd<<") from "<<peeraddr.sin_addr.s_addr<<":"<<peeraddr.sin_port<<std::endl;
 		channels.push_back(fd);
 		Channel* ch = new Channel(connfd);
 		ch->SetReadCallback(ReadCB,(void*) connfd);
