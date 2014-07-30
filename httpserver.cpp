@@ -6,7 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
-#include <channel.c>
+#include "channel.h"
 
 void ConnectCB(void* arg)
 {
@@ -17,7 +17,7 @@ void ConnectCB(void* arg)
 void ReadCB(void *arg)
 {
    char buf[1024] = {0};
-   int fd = (int)arg;
+   int fd = *((int*)(&arg));
    if(read(fd, buf, 6000) > 0)
 	{
 		std::cout<<"**************recive date*************"<<std::endl;
@@ -58,24 +58,27 @@ bool HttpServer::Start()
         std::cout<<"listen failed"<<std::endl;
         return false;
     }
+    std::cout<<"listen fd: "<<listenfd_<<std::endl;
     struct pollfd fd;
     fd.fd = listenfd_;
     fd.events = POLLIN;
     channels.push_back(fd);
     Channel* ch = new Channel(listenfd_);
     ch->SetReadCallback(ConnectCB, this);
-    chs_.insert(std::pair<int, Channel*>();
+    chs_.insert(std::pair<int, Channel*>(listenfd_, ch));
     while ( true )
     {
         int eventnum;
         eventnum = poll(&channels[0], channels.size(), -1);
         if(eventnum > 0)
         {
-		    for(int i = 1; i < eventnum; ++i)
+		    for(int i = 0; i < eventnum; ++i)
 			{
+                            //std::cout<<"event: "<<channels[i].revents<<std::endl;
 			    if( channels[i].revents & POLLIN)
-				{
-				    Channel* ch = chs_[channels[i].fd].second;
+				{   
+                                    std::cout<<"detect event on "<<channels[i].fd<<std::endl;
+				    Channel* ch = chs_[channels[i].fd];
 				    ch->HandleRead();
 				}
 			}
@@ -123,6 +126,8 @@ void HttpServer::AddChannel(int fd, Channel* chn)
 void HttpServer::OnConnection()
 {
 	int connfd;
+        struct sockaddr_in peeraddr;
+        struct pollfd fd;
 	int socklen = sizeof(sockaddr);
 	connfd = accept(listenfd_, (sockaddr *)&peeraddr, (socklen_t *)&socklen);
 	if( connfd > 0 )
@@ -132,7 +137,7 @@ void HttpServer::OnConnection()
 		std::cout<<"accept new connection from "<<peeraddr.sin_addr.s_addr<<":"<<peeraddr.sin_port<<std::endl;
 		channels.push_back(fd);
 		Channel* ch = new Channel(connfd);
-		ch->SetReadCallback(ReadCB, connfd);
+		ch->SetReadCallback(ReadCB,(void*) connfd);
 		chs_.insert(std::pair<int, Channel*>(connfd, ch));
 		//chn->SetWriteCallback();
 	}

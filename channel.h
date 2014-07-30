@@ -1,10 +1,10 @@
 #ifndef _CHANNEL_H_
 #define _CHANNEL_H_
 
+typedef void(*functor)(void* );
 class Channel
 {
 public:
-   typedef void(* functor)(void *);
    explicit Channel(int fd);
    ~Channel() {}
    inline void SetReadCallback(functor cb, void* arg) {readcb_ = cb; userdata_ = arg;}

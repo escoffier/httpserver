@@ -15,7 +15,7 @@ public:
     
     bool Start();
     void AddChannel(int fd, Channel*); 
-    void OnConnection(int listenfd);	
+    void OnConnection();	
 private:
     short port_;
     std::vector<pollfd> channels;
