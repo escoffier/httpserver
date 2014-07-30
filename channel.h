@@ -4,18 +4,18 @@
 class Channel
 {
 public:
-   typedef void(* func)(void *arg ) funtor
+   typedef void(* functor)(void *);
    explicit Channel(int fd);
    ~Channel() {}
-   inline void SetReadCallback(funtor cb, void* arg) {readcb_ = cb; userdata_ = arg;}
-   inline void SetReadCallback(funtor cb, void *arg) {writecb_ = cb;userdata_ = arg;}
+   inline void SetReadCallback(functor cb, void* arg) {readcb_ = cb; userdata_ = arg;}
+   inline void SetWriteCallback(functor cb, void *arg) {writecb_ = cb;userdata_ = arg;}
    
    inline void HandleRead() { readcb_(userdata_); };
-   inline void HandleWrite() { writecb_(userdata_) };
+   inline void HandleWrite() { writecb_(userdata_); };
 private:
    int                      fd_;    
-   funtor                   readcb_;
-   funtor                   writecb_;
+   functor                  readcb_;
+   functor                  writecb_;
    void*                    userdata_;
-}£»
+};
 #endif

@@ -1,5 +1,5 @@
 
-objects = main.o httpserver.o
+objects = main.o httpserver.o channel.o
 cc = g++
 
 httpserver : $(objects)
