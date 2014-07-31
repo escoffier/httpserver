@@ -11,20 +11,40 @@
 void ConnectCB(void* arg)
 {
     HttpServer* server = (HttpServer*) arg;
-	server->OnConnection();
+    server->OnConnection();
 }
 
 void ReadCB(void *arg)
 {
-   char buf[1024] = {0};
-   int fd = *((int*)(&arg));
-   std::cout<<"read fd: "<<fd<<std::endl;
-   if(read(fd, buf, 6000) > 0)
-	{
-		std::cout<<"**************recive date*************"<<std::endl;
-		std::cout<<buf<<std::endl;
-		std::cout<<"**************************************"<<std::endl;
-	}
+    char buf[1024] = {0};
+    int fd = *((int*)(&arg));
+    std::cout<<"read fd: "<<fd<<std::endl;
+    int n = read(fd, buf, 6000);
+    if(n > 0)
+    {
+    std::cout<<"**************recive date*************"<<std::endl;
+    std::cout<<buf<<std::endl;
+    std::cout<<"**************************************"<<std::endl;
+    }
+    else if(0 == n)
+    {
+        close(fd);
+		std::cout<<"connection close"<<std::endl;
+        delete(chs_[fd]);
+        chs_.erase(fd);
+        for(int i = 0; i < channels.size; ++i)
+        {
+            if(fd == channels[i].fd)
+            {
+                channels[i].erase(i);
+				break;
+            }
+        }
+    }
+    else
+    {
+        std::cout<<"read error: "<<errno<<std::endl;
+    }
 }
 HttpServer::HttpServer(short port)
 {
@@ -76,16 +96,16 @@ bool HttpServer::Start()
         std::cout<<"event fd number: "<<eventnum<<std::endl;
         if(eventnum > 0)
         {
-		    for(int i = 0; i <channels.size(); ++i)
-			{
-			    if( channels[i].revents & POLLIN)
-				{   
-                                   std::cout<<"event: "<<channels[i].revents<<std::endl;
-                                    std::cout<<"detect event on "<<channels[i].fd<<std::endl;
-				    Channel* ch = chs_[channels[i].fd];
-				    ch->HandleRead();
-				}
-			}
+            for(int i = 0; i <channels.size(); ++i)
+            {
+                if( channels[i].revents & POLLIN)
+                {   
+                    std::cout<<"event: "<<channels[i].revents<<std::endl;
+                    std::cout<<"detect event on "<<channels[i].fd<<std::endl;
+                    Channel* ch = chs_[channels[i].fd];
+                    ch->HandleRead();
+                }
+            }
 /*             if( channels[0].revents & POLLIN)
             {
                 int connfd;
@@ -129,25 +149,25 @@ void HttpServer::AddChannel(int fd, Channel* chn)
 
 void HttpServer::OnConnection()
 {
-	int connfd;
+    int connfd;
         struct sockaddr_in peeraddr;
         struct pollfd fd;
         fd.events = 0;
         fd.revents = 0;
-	int socklen = sizeof(sockaddr);
-	connfd = accept(listenfd_, (sockaddr *)&peeraddr, (socklen_t *)&socklen);
-	if( connfd > 0 )
-	{
-		channels[0].revents = 0;
-		fd.fd = connfd;
-		fd.events |= POLLIN;
-		std::cout<<"accept new connection("<<connfd<<") from "<<peeraddr.sin_addr.s_addr<<":"<<peeraddr.sin_port<<std::endl;
-		channels.push_back(fd);
-		Channel* ch = new Channel(connfd);
-		ch->SetReadCallback(ReadCB,(void*) connfd);
-		chs_.insert(std::pair<int, Channel*>(connfd, ch));
-		//chn->SetWriteCallback();
-	}
+    int socklen = sizeof(sockaddr);
+    connfd = accept(listenfd_, (sockaddr *)&peeraddr, (socklen_t *)&socklen);
+    if( connfd > 0 )
+    {
+        channels[0].revents = 0;
+        fd.fd = connfd;
+        fd.events |= POLLIN;
+        std::cout<<"accept new connection("<<connfd<<") from "<<peeraddr.sin_addr.s_addr<<":"<<peeraddr.sin_port<<std::endl;
+        channels.push_back(fd);
+        Channel* ch = new Channel(connfd);
+        ch->SetReadCallback(ReadCB,(void*)connfd);
+        chs_.insert(std::pair<int, Channel*>(connfd, ch));
+        //chn->SetWriteCallback();
+    }
 }
 
 
