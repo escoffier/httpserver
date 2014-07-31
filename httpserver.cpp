@@ -15,37 +15,26 @@ void ConnectCB(void* arg)
 }
 
 void ReadCB(void *arg)
-{
+{  
     char buf[1024] = {0};
     int fd = *((int*)(&arg));
-    std::cout<<"read fd: "<<fd<<std::endl;
-    int n = read(fd, buf, 6000);
-    if(n > 0)
+    HttpServer::GetInstance()->OnRead(fd);
+}
+
+HttpServer::instance = NULL;
+
+HttpServer& HttpServer::GetInstance()
+{
+    if(instance == NULL)
     {
-    std::cout<<"**************recive date*************"<<std::endl;
-    std::cout<<buf<<std::endl;
-    std::cout<<"**************************************"<<std::endl;
-    }
-    else if(0 == n)
-    {
-        close(fd);
-		std::cout<<"connection close"<<std::endl;
-        delete(chs_[fd]);
-        chs_.erase(fd);
-        for(int i = 0; i < channels.size; ++i)
-        {
-            if(fd == channels[i].fd)
-            {
-                channels[i].erase(i);
-				break;
-            }
-        }
+        return new HttpServer;
     }
     else
     {
-        std::cout<<"read error: "<<errno<<std::endl;
+        return instance;
     }
 }
+
 HttpServer::HttpServer(short port)
 {
     port_ = port;
@@ -106,7 +95,6 @@ bool HttpServer::Start()
                     ch->HandleRead();
                 }
             }
-/*             if( channels[0].revents & POLLIN)
             {
                 int connfd;
                 int socklen = sizeof(sockaddr);
@@ -134,7 +122,7 @@ bool HttpServer::Start()
                 }
             } */
         }
-        else
+        else if(eventnum < 0)
         {
             std::cout<<" event error: "<<errno<<std::endl;
         }
@@ -167,6 +155,39 @@ void HttpServer::OnConnection()
         ch->SetReadCallback(ReadCB,(void*)connfd);
         chs_.insert(std::pair<int, Channel*>(connfd, ch));
         //chn->SetWriteCallback();
+    }
+}
+
+void HttpServer::OnRead(int fd)
+{
+    char buf[1024] = {0};
+    //int fd = *((int*)(&arg));
+    std::cout<<"read fd: "<<fd<<std::endl;
+    int n = read(fd, buf, 6000);
+    if(n > 0)
+    {
+        std::cout<<"**************recive date*************"<<std::endl;
+        std::cout<<buf<<std::endl;
+        std::cout<<"**************************************"<<std::endl;
+    }
+    else if(0 == n)
+    {
+        close(fd);
+        std::cout<<"connection close"<<std::endl;
+        delete(chs_[fd]);
+        chs_.erase(fd);
+        for(int i = 0; i < channels.size(); ++i)
+        {
+            if(fd == channels[i].fd)
+            {
+                channels[i].erase(i);
+                break;
+            }
+        }
+    }
+    else
+    {
+        std::cout<<"read error: "<<errno<<std::endl;
     }
 }
 

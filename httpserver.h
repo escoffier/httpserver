@@ -8,18 +8,32 @@ class Channel;
 
 class HttpServer
 {
-public:
-    typedef void (*functor)(void* arg);
+private:
     explicit HttpServer(short port);
     ~HttpServer() {};
+public:
+    typedef void (*functor)(void* arg);
+
     
     bool Start();
     void AddChannel(int fd, Channel*); 
-    void OnConnection();	
+    void OnConnection();
+    void OnRead(int fd);
+public:
+    static HttpServer* GetInstance();
 private:
     short port_;
     std::vector<pollfd> channels;
     std::map<int, Channel*> chs_;
-	int listenfd_;
+    int listenfd_;
+private:
+    static HttpServer* instance;    
 };
+
+struct EventFileDes
+{
+    HttpServer* server
+    int fd;
+};
+
 #endif
