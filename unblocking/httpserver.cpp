@@ -6,6 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+#include <fcntl.h>
 #include "channel.h"
 
 void ConnectCB(void* arg)
@@ -45,6 +46,18 @@ bool HttpServer::Start()
     if( listenfd_ == -1)
     {
         std::cout<<"fail to get socket"<<std::endl;
+        return false;
+    }
+    int flag = fcntl(listenfd_, F_GETFL, NULL);
+    if(flag < 0)
+    {
+        std::cout<<"fcntl, "<<flag<<std::endl;
+        return false;
+    }
+    flag = fcntl(listenfd_, F_SETFL, flag|O_NONBLOCK);
+    if(flag < 0)
+    {
+        std::cout<<"fcntl set fail: "<<flag<<std::endl;
         return false;
     }
     struct sockaddr_in serveraddr;
@@ -127,6 +140,13 @@ void HttpServer::OnConnection()
         ch->SetReadCallback(ReadCB,(void*)connfd);
         chs_.insert(std::pair<int, Channel*>(connfd, ch));
         //chn->SetWriteCallback();
+    }
+    else if(connfd < 0)
+    {
+        if(EAGAIN == errno)
+        {
+            std::cout<<"accept return cause EAGAIN"<<std::endl;
+        }
     }
 }
 

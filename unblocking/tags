@@ -4,37 +4,61 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-AddChannel	httpserver.cpp	/^void HttpServer::AddChannel(int fd, Channel* chn)$/;"	f	class:HttpServer
-Channel	channel.cpp	/^Channel::Channel(int fd)$/;"	f	class:Channel
-Channel	channel.h	/^class Channel$/;"	c
-ConnectCB	httpserver.cpp	/^void ConnectCB(void* arg)$/;"	f
-GetInstance	httpserver.cpp	/^HttpServer* HttpServer::GetInstance()$/;"	f	class:HttpServer
-HandleRead	channel.cpp	/^void Channel::HandleRead() $/;"	f	class:Channel
-HandleWrite	channel.h	/^   inline void HandleWrite() { writecb_(userdata_); };$/;"	f	class:Channel
-HttpServer	httpserver.cpp	/^HttpServer::HttpServer(short port)$/;"	f	class:HttpServer
-HttpServer	httpserver.h	/^class HttpServer$/;"	c
-OnConnection	httpserver.cpp	/^void HttpServer::OnConnection()$/;"	f	class:HttpServer
-OnRead	httpserver.cpp	/^void HttpServer::OnRead(int fd)$/;"	f	class:HttpServer
-ReadCB	httpserver.cpp	/^void ReadCB(void *arg)$/;"	f
-SetReadCallback	channel.h	/^   inline void SetReadCallback(functor cb, void* arg) {readcb_ = cb; userdata_ = arg;}$/;"	f	class:Channel
-SetWriteCallback	channel.h	/^   inline void SetWriteCallback(functor cb, void *arg) {writecb_ = cb;userdata_ = arg;}$/;"	f	class:Channel
-Start	httpserver.cpp	/^bool HttpServer::Start()$/;"	f	class:HttpServer
+Channel	channel.cpp	/^Channel::Channel(int fd)$/;"	f	class:Channel	signature:(int fd)
+Channel::Channel	channel.cpp	/^Channel::Channel(int fd)$/;"	f	class:Channel	signature:(int fd)
+HandleRead	channel.cpp	/^void Channel::HandleRead() $/;"	f	class:Channel	signature:()
+Channel::HandleRead	channel.cpp	/^void Channel::HandleRead() $/;"	f	class:Channel	signature:()
 _CHANNEL_H_	channel.h	2;"	d
-_HTTPSERVER_H_	httpserver.h	2;"	d
-cc	makefile	/^cc = g++$/;"	m
-channels	httpserver.h	/^    std::vector<pollfd> channels;$/;"	m	class:HttpServer
-chs_	httpserver.h	/^    std::map<int, Channel*> chs_;$/;"	m	class:HttpServer
-fd_	channel.h	/^   int                      fd_;    $/;"	m	class:Channel
 functor	channel.h	/^typedef void(*functor)(void* );$/;"	t
-functor	httpserver.h	/^    typedef void (*functor)(void* arg);$/;"	t	class:HttpServer
+Channel	channel.h	/^class Channel$/;"	c
+~Channel	channel.h	/^   ~Channel() {}$/;"	f	class:Channel	access:public	signature:()
+Channel::~Channel	channel.h	/^   ~Channel() {}$/;"	f	class:Channel	access:public	signature:()
+SetReadCallback	channel.h	/^   inline void SetReadCallback(functor cb, void* arg) {readcb_ = cb; userdata_ = arg;}$/;"	f	class:Channel	access:public	signature:(functor cb, void* arg)
+Channel::SetReadCallback	channel.h	/^   inline void SetReadCallback(functor cb, void* arg) {readcb_ = cb; userdata_ = arg;}$/;"	f	class:Channel	access:public	signature:(functor cb, void* arg)
+SetWriteCallback	channel.h	/^   inline void SetWriteCallback(functor cb, void *arg) {writecb_ = cb;userdata_ = arg;}$/;"	f	class:Channel	access:public	signature:(functor cb, void *arg)
+Channel::SetWriteCallback	channel.h	/^   inline void SetWriteCallback(functor cb, void *arg) {writecb_ = cb;userdata_ = arg;}$/;"	f	class:Channel	access:public	signature:(functor cb, void *arg)
+HandleWrite	channel.h	/^   inline void HandleWrite() { writecb_(userdata_); };$/;"	f	class:Channel	access:public	signature:()
+Channel::HandleWrite	channel.h	/^   inline void HandleWrite() { writecb_(userdata_); };$/;"	f	class:Channel	access:public	signature:()
+fd_	channel.h	/^   int                      fd_;    $/;"	m	class:Channel	access:private
+Channel::fd_	channel.h	/^   int                      fd_;    $/;"	m	class:Channel	access:private
+readcb_	channel.h	/^   functor                  readcb_;$/;"	m	class:Channel	access:private
+Channel::readcb_	channel.h	/^   functor                  readcb_;$/;"	m	class:Channel	access:private
+writecb_	channel.h	/^   functor                  writecb_;$/;"	m	class:Channel	access:private
+Channel::writecb_	channel.h	/^   functor                  writecb_;$/;"	m	class:Channel	access:private
+userdata_	channel.h	/^   void*                    userdata_;$/;"	m	class:Channel	access:private
+Channel::userdata_	channel.h	/^   void*                    userdata_;$/;"	m	class:Channel	access:private
+ConnectCB	httpserver.cpp	/^void ConnectCB(void* arg)$/;"	f	signature:(void* arg)
+ReadCB	httpserver.cpp	/^void ReadCB(void *arg)$/;"	f	signature:(void *arg)
 instance	httpserver.cpp	/^HttpServer* HttpServer::instance = NULL;$/;"	m	class:HttpServer	file:
-instance	httpserver.h	/^    static HttpServer* instance;    $/;"	m	class:HttpServer
-listenfd_	httpserver.h	/^    int listenfd_;$/;"	m	class:HttpServer
-main	main.cpp	/^int main(int argc, char **argv )$/;"	f
+HttpServer::instance	httpserver.cpp	/^HttpServer* HttpServer::instance = NULL;$/;"	m	class:HttpServer	file:
+GetInstance	httpserver.cpp	/^HttpServer* HttpServer::GetInstance()$/;"	f	class:HttpServer	signature:()
+HttpServer::GetInstance	httpserver.cpp	/^HttpServer* HttpServer::GetInstance()$/;"	f	class:HttpServer	signature:()
+HttpServer	httpserver.cpp	/^HttpServer::HttpServer(short port)$/;"	f	class:HttpServer	signature:(short port)
+HttpServer::HttpServer	httpserver.cpp	/^HttpServer::HttpServer(short port)$/;"	f	class:HttpServer	signature:(short port)
+Start	httpserver.cpp	/^bool HttpServer::Start()$/;"	f	class:HttpServer	signature:()
+HttpServer::Start	httpserver.cpp	/^bool HttpServer::Start()$/;"	f	class:HttpServer	signature:()
+AddChannel	httpserver.cpp	/^void HttpServer::AddChannel(int fd, Channel* chn)$/;"	f	class:HttpServer	signature:(int fd, Channel* chn)
+HttpServer::AddChannel	httpserver.cpp	/^void HttpServer::AddChannel(int fd, Channel* chn)$/;"	f	class:HttpServer	signature:(int fd, Channel* chn)
+OnConnection	httpserver.cpp	/^void HttpServer::OnConnection()$/;"	f	class:HttpServer	signature:()
+HttpServer::OnConnection	httpserver.cpp	/^void HttpServer::OnConnection()$/;"	f	class:HttpServer	signature:()
+OnRead	httpserver.cpp	/^void HttpServer::OnRead(int fd)$/;"	f	class:HttpServer	signature:(int fd)
+HttpServer::OnRead	httpserver.cpp	/^void HttpServer::OnRead(int fd)$/;"	f	class:HttpServer	signature:(int fd)
+_HTTPSERVER_H_	httpserver.h	2;"	d
+HttpServer	httpserver.h	/^class HttpServer$/;"	c
+~HttpServer	httpserver.h	/^    ~HttpServer() {};$/;"	f	class:HttpServer	access:private	signature:()
+HttpServer::~HttpServer	httpserver.h	/^    ~HttpServer() {};$/;"	f	class:HttpServer	access:private	signature:()
+functor	httpserver.h	/^    typedef void (*functor)(void* arg);$/;"	t	class:HttpServer	access:public
+HttpServer::functor	httpserver.h	/^    typedef void (*functor)(void* arg);$/;"	t	class:HttpServer	access:public
+port_	httpserver.h	/^    short port_;$/;"	m	class:HttpServer	access:private
+HttpServer::port_	httpserver.h	/^    short port_;$/;"	m	class:HttpServer	access:private
+channels	httpserver.h	/^    std::vector<pollfd> channels;$/;"	m	class:HttpServer	access:private
+HttpServer::channels	httpserver.h	/^    std::vector<pollfd> channels;$/;"	m	class:HttpServer	access:private
+chs_	httpserver.h	/^    std::map<int, Channel*> chs_;$/;"	m	class:HttpServer	access:private
+HttpServer::chs_	httpserver.h	/^    std::map<int, Channel*> chs_;$/;"	m	class:HttpServer	access:private
+listenfd_	httpserver.h	/^    int listenfd_;$/;"	m	class:HttpServer	access:private
+HttpServer::listenfd_	httpserver.h	/^    int listenfd_;$/;"	m	class:HttpServer	access:private
+instance	httpserver.h	/^    static HttpServer* instance;    $/;"	m	class:HttpServer	access:private
+HttpServer::instance	httpserver.h	/^    static HttpServer* instance;    $/;"	m	class:HttpServer	access:private
+main	main.cpp	/^int main(int argc, char **argv )$/;"	f	signature:(int argc, char **argv )
 objects	makefile	/^objects = main.o httpserver.o channel.o$/;"	m
-port_	httpserver.h	/^    short port_;$/;"	m	class:HttpServer
-readcb_	channel.h	/^   functor                  readcb_;$/;"	m	class:Channel
-userdata_	channel.h	/^   void*                    userdata_;$/;"	m	class:Channel
-writecb_	channel.h	/^   functor                  writecb_;$/;"	m	class:Channel
-~Channel	channel.h	/^   ~Channel() {}$/;"	f	class:Channel
-~HttpServer	httpserver.h	/^    ~HttpServer() {};$/;"	f	class:HttpServer
+cc	makefile	/^cc = g++$/;"	m
