@@ -10,7 +10,7 @@ public:
    inline void SetReadCallback(functor cb, void* arg) {readcb_ = cb; userdata_ = arg;}
    inline void SetWriteCallback(functor cb, void *arg) {writecb_ = cb;userdata_ = arg;}
    
-   inline void HandleRead() { readcb_(userdata_); };
+   void HandleRead();
    inline void HandleWrite() { writecb_(userdata_); };
 private:
    int                      fd_;    

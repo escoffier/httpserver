@@ -6,3 +6,7 @@ Channel::Channel(int fd)
 
 }
 
+void Channel::HandleRead() 
+{ 
+    readcb_(userdata_); 
+}
