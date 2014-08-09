@@ -128,24 +128,28 @@ void HttpServer::OnConnection()
     fd.events = 0;
     fd.revents = 0;
     int socklen = sizeof(sockaddr);
-    connfd = accept(listenfd_, (sockaddr *)&peeraddr, (socklen_t *)&socklen);
-    if( connfd > 0 )
+    while(1)
     {
-        channels[0].revents = 0;
-        fd.fd = connfd;
-        fd.events |= POLLIN;
-        std::cout<<"accept new connection("<<connfd<<") from "<<peeraddr.sin_addr.s_addr<<":"<<peeraddr.sin_port<<std::endl;
-        channels.push_back(fd);
-        Channel* ch = new Channel(connfd);
-        ch->SetReadCallback(ReadCB,(void*)connfd);
-        chs_.insert(std::pair<int, Channel*>(connfd, ch));
-        //chn->SetWriteCallback();
-    }
-    else if(connfd < 0)
-    {
-        if(EAGAIN == errno)
+        connfd = accept(listenfd_, (sockaddr *)&peeraddr, (socklen_t *)&socklen);
+        if( connfd > 0 )
         {
-            std::cout<<"accept return cause EAGAIN"<<std::endl;
+            channels[0].revents = 0;
+            fd.fd = connfd;
+            fd.events |= POLLIN;
+            std::cout<<"accept new connection("<<connfd<<") from "<<peeraddr.sin_addr.s_addr<<":"<<peeraddr.sin_port<<std::endl;
+            channels.push_back(fd);
+            Channel* ch = new Channel(connfd);
+            ch->SetReadCallback(ReadCB,(void*)connfd);
+            chs_.insert(std::pair<int, Channel*>(connfd, ch));
+            //chn->SetWriteCallback();
+        }
+        else if(connfd < 0)
+        {
+            if(EAGAIN == errno)
+            {
+                std::cout<<"accept return cause EAGAIN"<<std::endl;
+            }
+            break;
         }
     }
 }
