@@ -123,10 +123,10 @@ void HttpServer::AddChannel(int fd, Channel* chn)
 void HttpServer::OnConnection()
 {
     int connfd;
-        struct sockaddr_in peeraddr;
-        struct pollfd fd;
-        fd.events = 0;
-        fd.revents = 0;
+    struct sockaddr_in peeraddr;
+    struct pollfd fd;
+    fd.events = 0;
+    fd.revents = 0;
     int socklen = sizeof(sockaddr);
     connfd = accept(listenfd_, (sockaddr *)&peeraddr, (socklen_t *)&socklen);
     if( connfd > 0 )
